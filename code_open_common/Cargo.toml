@@ -1,0 +1,11 @@
+[package]
+name = "code_open_common"
+version = "0.1.0"
+authors = ["Akihiro Shoji <alpha.kai.net@alpha-kai-net.info>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+rmp-serde = "0.15.4"
