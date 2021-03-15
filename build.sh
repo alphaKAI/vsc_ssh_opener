@@ -1,9 +1,9 @@
 #!/usr/bin/env zsh
 
 local targets=(
-  ./code_open_command
+  ./code-open
   ./code_open_common
-  ./code_open_server
+  ./code-open-server
 )
 local base=$(pwd)
 
