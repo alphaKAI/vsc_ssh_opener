@@ -1,18 +1,16 @@
 use code_open_common::{CodeOpenInfo, CodeOpenRequest, SerializedDataContainer};
 use once_cell::sync::Lazy;
-use std::process::Command;
 use std::{collections::HashMap, fs::File};
 use std::{io::Read, net::TcpListener};
+use std::{io::Write, process::Command};
 
-static THIS_APP_NAME: &str = "code_open_daemon";
+static THIS_APP_NAME: &str = "code-open-server";
 static THIS_APP_CONFIG_BASE_PATH: Lazy<String> =
-    Lazy::new(|| format!("$XDG_CONFIG_HOME/{}", THIS_APP_NAME));
+    Lazy::new(|| shellexpand::full(&format!("$XDG_CONFIG_HOME/{}", THIS_APP_NAME)).unwrap().to_string());
 static TABLE_FILE_NAME: &str = "table.json";
 
 fn get_table_file_path() -> String {
-    let table_file_path = format!("{}/{}", *THIS_APP_CONFIG_BASE_PATH, TABLE_FILE_NAME);
-
-    shellexpand::full(&table_file_path).unwrap().to_string()
+    format!("{}/{}", *THIS_APP_CONFIG_BASE_PATH, TABLE_FILE_NAME)
 }
 
 fn open_vscode_in_other_process(code_open_info: CodeOpenInfo) {
@@ -32,17 +30,28 @@ fn load_local_configured_name_table() -> HashMap<String, String> {
             f.read_to_string(&mut buf).ok()?;
             serde_json::from_str(&buf).ok()
         })
-        .unwrap_or_else(HashMap::new)
-    /*
-    vec![("AlphaKai-ArchLinux", "sofa")]
-        .into_iter()
-        .map(|(a, b)| (a.to_owned(), b.to_owned()))
-        .collect::<HashMap<_, _>>()
-        */
+        .unwrap_or_else(|| {
+            let ret = HashMap::new();
+
+            let serialized = serde_json::to_string(&ret)
+                .expect("Failed to serialize empty hashmap with serde_json");
+
+            std::fs::create_dir_all(&*THIS_APP_CONFIG_BASE_PATH).expect("failed to create directory for config files");
+
+            let mut f = File::create(get_table_file_path())
+                .unwrap_or_else(|_| panic!("Failed to create {}", get_table_file_path()));
+
+            f.write_all(serialized.as_bytes())
+                .expect("failed to write serialized bytes");
+
+            println!("There is no table file, so created empty table file at {}", get_table_file_path());
+
+            ret
+        })
 }
 
-fn resolve_host_name_to_local_configured_name(code_open_info: CodeOpenInfo) -> CodeOpenInfo {
-    match load_local_configured_name_table().get(&code_open_info.remote_host_name) {
+fn resolve_host_name_to_local_configured_name(code_open_info: CodeOpenInfo, table: &HashMap<String, String>) -> CodeOpenInfo {
+    match table.get(&code_open_info.remote_host_name) {
         Some(remote_host_name) => CodeOpenInfo::new(
             remote_host_name.clone(),
             code_open_info.remote_dir_full_path,
@@ -52,8 +61,16 @@ fn resolve_host_name_to_local_configured_name(code_open_info: CodeOpenInfo) -> C
 }
 
 fn main() {
+    let table = load_local_configured_name_table();
+    println!("Actual host name to locally configured host name in .ssh/config table:");
+    for (k, v) in table.iter() {
+        println!("* {} -> {}", k, v);
+    }
+
+
     let listener = TcpListener::bind(("0.0.0.0", 3000)).unwrap();
     println!("Server is started!");
+
     for stream in listener.incoming() {
         println!("{:?}", stream);
         match stream {
@@ -67,7 +84,7 @@ fn main() {
                 match code_open_req {
                     CodeOpenRequest::Open(code_open_info) => {
                         let code_open_info =
-                            resolve_host_name_to_local_configured_name(code_open_info);
+                            resolve_host_name_to_local_configured_name(code_open_info, &table);
                         println!("Open VSCode! {:?}", code_open_info);
                         open_vscode_in_other_process(code_open_info)
                     }
