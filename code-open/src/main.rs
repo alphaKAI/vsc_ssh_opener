@@ -43,7 +43,8 @@ fn main() {
                 .short("i")
                 .long("ip")
                 .takes_value(true)
-                .default_value(DEFAULT_IP),
+                .default_value(DEFAULT_IP)
+                .help("ip address of the server to be connected"),
         )
         .arg(
             Arg::with_name("port")
@@ -51,8 +52,10 @@ fn main() {
                 .short("p")
                 .long("port")
                 .takes_value(true)
-                .default_value(default_port_str),
-        );
+                .default_value(default_port_str)
+                .help("port number of the server to be connected"),
+        )
+        .arg(Arg::with_name("path").required(false));
 
     let matches = app.get_matches();
 
@@ -69,19 +72,16 @@ fn main() {
         return;
     }
 
-    let args: Vec<String> = env::args().collect();
-    let args = args[1..].to_owned();
-
-    let path = if !args.is_empty() {
-        let path = &args[0];
-        PathBuf::from(
-            shellexpand::full(path)
-                .expect("failed to tilde expad")
-                .to_string(),
-        )
-    } else {
-        env::current_dir().unwrap()
-    };
+    let path = matches.value_of("path").map_or_else(
+        || env::current_dir().unwrap(),
+        |path| {
+            PathBuf::from(
+                shellexpand::full(path)
+                    .expect("failed to tilde expad")
+                    .to_string(),
+            )
+        },
+    );
 
     let code_open_info = CodeOpenInfo::new(
         gethostname::gethostname()
