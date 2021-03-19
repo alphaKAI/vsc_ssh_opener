@@ -100,3 +100,31 @@ impl SerializedDataContainer {
         rmp_serde::from_slice(&self.data).ok()
     }
 }
+
+#[derive(Debug)]
+pub struct CodeOpenConfig {
+    pub ip: String,
+    pub port: u16,
+}
+
+pub static DEFAULT_IP: &str = "0.0.0.0";
+pub static DEFAULT_PORT: u16 = 3000;
+
+impl Default for CodeOpenConfig {
+    fn default() -> Self {
+        Self {
+            ip: DEFAULT_IP.to_owned(),
+            port: DEFAULT_PORT,
+        }
+    }
+}
+
+impl CodeOpenConfig {
+    pub fn set_ip(&mut self, ip: String) {
+        self.ip = ip;
+    }
+
+    pub fn set_port(&mut self, port: u16) {
+        self.port = port;
+    }
+}

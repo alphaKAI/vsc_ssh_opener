@@ -1,36 +1,8 @@
 use clap::{App, Arg};
-use code_open_common::{CodeOpenInfo, CodeOpenRequest, SerializedDataContainer};
+use code_open_common::*;
 use path_absolutize::*;
 use std::io::Write;
 use std::{env, net::TcpStream, path::PathBuf};
-
-#[derive(Debug)]
-struct CodeOpenConfig {
-    ip: String,
-    port: u16,
-}
-
-static DEFAULT_IP: &str = "0.0.0.0";
-static DEFAULT_PORT: u16 = 3000;
-
-impl Default for CodeOpenConfig {
-    fn default() -> Self {
-        Self {
-            ip: DEFAULT_IP.to_owned(),
-            port: DEFAULT_PORT,
-        }
-    }
-}
-
-impl CodeOpenConfig {
-    pub fn set_ip(&mut self, ip: String) {
-        self.ip = ip;
-    }
-
-    pub fn set_port(&mut self, port: u16) {
-        self.port = port;
-    }
-}
 
 fn send_request_to_server(code_open_config: &CodeOpenConfig, code_open_req: CodeOpenRequest) {
     let mut connection = TcpStream::connect((code_open_config.ip.as_str(), code_open_config.port))
@@ -58,7 +30,8 @@ fn send_request_to_server(code_open_config: &CodeOpenConfig, code_open_req: Code
 fn main() {
     let ssh_flag = env::vars().any(|(k, _)| k == "SSH_CONNECTION");
     let mut code_open_config = CodeOpenConfig::default();
-    let default_port_str = DEFAULT_PORT.to_string();
+
+    let default_port_str = &DEFAULT_PORT.to_string();
 
     let app = App::new("code-open")
         .version("0.1.0")
@@ -78,7 +51,7 @@ fn main() {
                 .short("p")
                 .long("port")
                 .takes_value(true)
-                .default_value(&default_port_str),
+                .default_value(default_port_str),
         );
 
     let matches = app.get_matches();
