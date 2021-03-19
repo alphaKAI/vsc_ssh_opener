@@ -1,12 +1,16 @@
-use code_open_common::{CodeOpenInfo, CodeOpenRequest, SerializedDataContainer};
+use clap::{App, Arg};
+use code_open_common::*;
 use once_cell::sync::Lazy;
 use std::{collections::HashMap, fs::File};
 use std::{io::Read, net::TcpListener};
 use std::{io::Write, process::Command};
 
 static THIS_APP_NAME: &str = "code-open-server";
-static THIS_APP_CONFIG_BASE_PATH: Lazy<String> =
-    Lazy::new(|| shellexpand::full(&format!("$XDG_CONFIG_HOME/{}", THIS_APP_NAME)).unwrap().to_string());
+static THIS_APP_CONFIG_BASE_PATH: Lazy<String> = Lazy::new(|| {
+    shellexpand::full(&format!("$XDG_CONFIG_HOME/{}", THIS_APP_NAME))
+        .unwrap()
+        .to_string()
+});
 static TABLE_FILE_NAME: &str = "table.json";
 
 fn get_table_file_path() -> String {
@@ -36,7 +40,8 @@ fn load_local_configured_name_table() -> HashMap<String, String> {
             let serialized = serde_json::to_string(&ret)
                 .expect("Failed to serialize empty hashmap with serde_json");
 
-            std::fs::create_dir_all(&*THIS_APP_CONFIG_BASE_PATH).expect("failed to create directory for config files");
+            std::fs::create_dir_all(&*THIS_APP_CONFIG_BASE_PATH)
+                .expect("failed to create directory for config files");
 
             let mut f = File::create(get_table_file_path())
                 .unwrap_or_else(|_| panic!("Failed to create {}", get_table_file_path()));
@@ -44,13 +49,19 @@ fn load_local_configured_name_table() -> HashMap<String, String> {
             f.write_all(serialized.as_bytes())
                 .expect("failed to write serialized bytes");
 
-            println!("There is no table file, so created empty table file at {}", get_table_file_path());
+            println!(
+                "There is no table file, so created empty table file at {}",
+                get_table_file_path()
+            );
 
             ret
         })
 }
 
-fn resolve_host_name_to_local_configured_name(code_open_info: CodeOpenInfo, table: &HashMap<String, String>) -> CodeOpenInfo {
+fn resolve_host_name_to_local_configured_name(
+    code_open_info: CodeOpenInfo,
+    table: &HashMap<String, String>,
+) -> CodeOpenInfo {
     match table.get(&code_open_info.remote_host_name) {
         Some(remote_host_name) => CodeOpenInfo::new(
             remote_host_name.clone(),
@@ -60,15 +71,8 @@ fn resolve_host_name_to_local_configured_name(code_open_info: CodeOpenInfo, tabl
     }
 }
 
-fn main() {
-    let table = load_local_configured_name_table();
-    println!("Actual host name to locally configured host name in .ssh/config table:");
-    for (k, v) in table.iter() {
-        println!("* {} -> {}", k, v);
-    }
-
-
-    let listener = TcpListener::bind(("0.0.0.0", 3000)).unwrap();
+fn server_start(code_open_config: &CodeOpenConfig, table: &HashMap<String, String>) {
+    let listener = TcpListener::bind((code_open_config.ip.clone(), code_open_config.port)).unwrap();
     println!("Server is started!");
 
     for stream in listener.incoming() {
@@ -95,4 +99,48 @@ fn main() {
             }
         }
     }
+}
+
+fn main() {
+    let mut code_open_config = CodeOpenConfig::default();
+    let default_port_str = DEFAULT_PORT.to_string();
+
+    let app = App::new("code-open-server")
+        .version("0.1.0")
+        .author("Akihiro Shoji <alpha.kai.net@alpha-kai-net.info>")
+        .about("open VSCode over SSH Server")
+        .arg(
+            Arg::with_name("ip")
+                .required(false)
+                .short("i")
+                .long("ip")
+                .takes_value(true)
+                .default_value(DEFAULT_IP),
+        )
+        .arg(
+            Arg::with_name("port")
+                .required(false)
+                .short("p")
+                .long("port")
+                .takes_value(true)
+                .default_value(&default_port_str),
+        );
+
+    let matches = app.get_matches();
+
+    if let Some(ip) = matches.value_of("ip") {
+        code_open_config.set_ip(ip.to_owned());
+    }
+
+    if let Some(port) = matches.value_of("port") {
+        code_open_config.set_port(port.parse().expect("failed to parse given port number"));
+    }
+
+    let table = load_local_configured_name_table();
+    println!("Actual host name to locally configured host name in .ssh/config table:");
+    for (k, v) in table.iter() {
+        println!("* {} -> {}", k, v);
+    }
+
+    server_start(&code_open_config, &table);
 }
