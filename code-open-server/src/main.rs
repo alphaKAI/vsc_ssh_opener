@@ -7,9 +7,11 @@ use std::{io::Write, process::Command};
 
 static THIS_APP_NAME: &str = "code-open-server";
 static THIS_APP_CONFIG_BASE_PATH: Lazy<String> = Lazy::new(|| {
-    shellexpand::full(&format!("$XDG_CONFIG_HOME/{}", THIS_APP_NAME))
-        .unwrap()
-        .to_string()
+    format!(
+        "{}/{}",
+        dirs::config_dir().unwrap().to_str().unwrap(),
+        THIS_APP_NAME
+    )
 });
 static TABLE_FILE_NAME: &str = "table.json";
 
@@ -73,7 +75,7 @@ fn resolve_host_name_to_local_configured_name(
 
 fn server_start(code_open_config: &CodeOpenConfig, table: &HashMap<String, String>) {
     let listener = TcpListener::bind((code_open_config.ip.clone(), code_open_config.port)).unwrap();
-    println!("Server is started!");
+    println!("Server is started! - {}:{}", code_open_config.ip, code_open_config.port);
 
     for stream in listener.incoming() {
         println!("{:?}", stream);
