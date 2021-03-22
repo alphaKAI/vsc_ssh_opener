@@ -107,7 +107,7 @@ pub struct CodeOpenConfig {
     pub port: u16,
 }
 
-pub static DEFAULT_IP: &str = "0.0.0.0";
+pub static DEFAULT_IP: &str = "localhost";
 pub static DEFAULT_PORT: u16 = 3000;
 
 impl Default for CodeOpenConfig {
