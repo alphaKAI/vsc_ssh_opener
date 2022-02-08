@@ -91,25 +91,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "code-open-common"
+version = "0.1.0"
+dependencies = [
+ "rmp-serde",
+ "serde",
+]
+
+[[package]]
 name = "code-open-server"
 version = "0.1.0"
 dependencies = [
  "clap",
- "code_open_common",
+ "code-open-common",
  "dirs",
  "once_cell",
  "rmp-serde",
  "serde",
  "serde_json",
  "shellexpand",
-]
-
-[[package]]
-name = "code_open_common"
-version = "0.1.0"
-dependencies = [
- "rmp-serde",
- "serde",
 ]
 
 [[package]]
