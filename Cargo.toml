@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "code-open-common",
+    "code-open",
+    "code-open-server",
+]
