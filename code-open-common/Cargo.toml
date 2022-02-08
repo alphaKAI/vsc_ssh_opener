@@ -1,5 +1,5 @@
 [package]
-name = "code_open_common"
+name = "code-open-common"
 version = "0.1.0"
 authors = ["Akihiro Shoji <alpha.kai.net@alpha-kai-net.info>"]
 edition = "2018"

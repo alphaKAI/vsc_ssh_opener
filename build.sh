@@ -2,7 +2,7 @@
 
 local targets=(
   ./code-open
-  ./code_open_common
+  ./code-open-common
   ./code-open-server
 )
 local base=$(pwd)
