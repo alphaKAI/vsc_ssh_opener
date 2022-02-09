@@ -106,7 +106,7 @@ fn server_start(code_open_config: &CodeOpenConfig, table: &HashMap<String, Strin
                 match code_open_req {
                     CodeOpenRequest::Open(code_open_info) => {
                         let code_open_info =
-                            resolve_host_name_to_local_configured_name(code_open_info, &table);
+                            resolve_host_name_to_local_configured_name(code_open_info, table);
                         println!("Open VSCode! {:?}", code_open_info);
                         open_vscode_in_other_process(code_open_info)
                     }
