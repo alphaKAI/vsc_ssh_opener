@@ -1,6 +1,7 @@
 use clap::{App, Arg};
 use code_open_common::*;
 use once_cell::sync::Lazy;
+use std::path;
 use std::{collections::HashMap, fs::File};
 use std::{io::Read, net::TcpListener};
 use std::{io::Write, process::Command};
@@ -8,15 +9,21 @@ use std::{io::Write, process::Command};
 static THIS_APP_NAME: &str = "code-open-server";
 static THIS_APP_CONFIG_BASE_PATH: Lazy<String> = Lazy::new(|| {
     format!(
-        "{}/{}",
+        "{}{}{}",
         dirs::config_dir().unwrap().to_str().unwrap(),
+        path::MAIN_SEPARATOR,
         THIS_APP_NAME
     )
 });
 static TABLE_FILE_NAME: &str = "table.json";
 
 fn get_table_file_path() -> String {
-    format!("{}/{}", *THIS_APP_CONFIG_BASE_PATH, TABLE_FILE_NAME)
+    format!(
+        "{}{}{}",
+        *THIS_APP_CONFIG_BASE_PATH,
+        path::MAIN_SEPARATOR,
+        TABLE_FILE_NAME
+    )
 }
 
 fn open_vscode_in_other_process(code_open_info: CodeOpenInfo) {
