@@ -27,7 +27,13 @@ fn get_table_file_path() -> String {
 }
 
 fn open_vscode_in_other_process(code_open_info: CodeOpenInfo) {
-    Command::new("code")
+    let mut code_command = if cfg!(target_os = "windows") {
+        Command::new("code.cmd")
+    } else {
+        Command::new("code")
+    };
+
+    code_command
         .arg("--remote")
         .arg(format!("ssh-remote+{}", code_open_info.remote_host_name))
         .arg(code_open_info.remote_dir_full_path)
@@ -82,7 +88,10 @@ fn resolve_host_name_to_local_configured_name(
 
 fn server_start(code_open_config: &CodeOpenConfig, table: &HashMap<String, String>) {
     let listener = TcpListener::bind((code_open_config.ip.clone(), code_open_config.port)).unwrap();
-    println!("Server is started! - {}:{}", code_open_config.ip, code_open_config.port);
+    println!(
+        "Server is started! - {}:{}",
+        code_open_config.ip, code_open_config.port
+    );
 
     for stream in listener.incoming() {
         println!("{:?}", stream);
