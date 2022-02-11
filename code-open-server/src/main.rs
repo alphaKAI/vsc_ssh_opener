@@ -128,17 +128,17 @@ fn main() {
         .author("Akihiro Shoji <alpha.kai.net@alpha-kai-net.info>")
         .about("open VSCode over SSH Server")
         .arg(
-            Arg::with_name("ip")
+            Arg::new("ip")
                 .required(false)
-                .short("i")
+                .short('i')
                 .long("ip")
                 .takes_value(true)
                 .default_value(DEFAULT_IP),
         )
         .arg(
-            Arg::with_name("port")
+            Arg::new("port")
                 .required(false)
-                .short("p")
+                .short('p')
                 .long("port")
                 .takes_value(true)
                 .default_value(&default_port_str),
