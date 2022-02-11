@@ -38,24 +38,24 @@ fn main() {
         .author("Akihiro Shoji <alpha.kai.net@alpha-kai-net.info>")
         .about("open VSCode over SSH")
         .arg(
-            Arg::with_name("ip")
+            Arg::new("ip")
                 .required(false)
-                .short("i")
+                .short('i')
                 .long("ip")
                 .takes_value(true)
                 .default_value(DEFAULT_IP)
                 .help("ip address of the server to be connected"),
         )
         .arg(
-            Arg::with_name("port")
+            Arg::new("port")
                 .required(false)
-                .short("p")
+                .short('p')
                 .long("port")
                 .takes_value(true)
                 .default_value(default_port_str)
                 .help("port number of the server to be connected"),
         )
-        .arg(Arg::with_name("path").required(false));
+        .arg(Arg::new("path").required(false));
 
     let matches = app.get_matches();
 
