@@ -6,7 +6,7 @@ Using `vsc-ssh-opener`, you can `code .` in SSH!
 
 1. Build server binary in Local
 
-    Clone this repository and Run the following in the repository root:
+    Clone this repository and run as follows to build the server binary at root of the repository:
     ```bash
     $ cargo build --release
     ```
