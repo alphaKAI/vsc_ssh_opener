@@ -1,6 +1,6 @@
-# vsc_ssh_opener
+# vsc-ssh-opener
 
-Using `vsc_ssh_opener`, you can `code .` in SSH!
+Using `vsc-ssh-opener`, you can `code .` in SSH!
 
 ## Usage
 
