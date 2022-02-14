@@ -4,7 +4,7 @@ Using `vsc-ssh-opener`, you can `code .` in SSH!
 
 ## Usage
 
-1. Build binary in Local
+1. Build server binary in Local
 
     Clone this repository and Run the following in the repository root:
     ```bash
@@ -40,7 +40,7 @@ Using `vsc-ssh-opener`, you can `code .` in SSH!
     $ ssh -R 3000:localhost:3000 ssh-host
     ```
 
-5. Build and Install binary in Remote
+5. Build and Install client binary in Remote
 
     ```bash
     $ cargo install --git https://github.com/alphaKAI/vsc_ssh_opener code-open
