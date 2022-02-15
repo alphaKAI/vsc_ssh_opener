@@ -43,7 +43,7 @@ Using `vsc-ssh-opener`, you can `code .` in SSH!
 5. Build and Install client binary in Remote
 
     ```bash
-    $ cargo install --git https://github.com/alphaKAI/vsc_ssh_opener code-open
+    $ cargo install --git https://github.com/azarashi2931/vsc_ssh_opener code-open
     ```
 
 Now, you can open the local VSCode by running the following somewhere remotely!:
