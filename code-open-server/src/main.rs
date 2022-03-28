@@ -135,9 +135,10 @@ fn server_start(code_open_config: &CodeOpenConfig, table: &HashMap<String, Strin
 fn main() {
     let args = Args::parse();
 
-    let mut code_open_config = CodeOpenConfig::default();
-    code_open_config.set_ip(args.ip);
-    code_open_config.set_port(args.port);
+    let code_open_config = CodeOpenConfig {
+        ip: args.ip,
+        port: args.port,
+    };
 
     let table = load_local_configured_name_table();
     println!("Actual host name to locally configured host name in .ssh/config table:");

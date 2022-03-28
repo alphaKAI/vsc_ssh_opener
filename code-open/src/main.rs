@@ -44,13 +44,14 @@ fn send_request_to_server(code_open_config: &CodeOpenConfig, code_open_req: Code
 }
 
 fn main() {
-    let ssh_flag = env::vars().any(|(k, _)| k == "SSH_CONNECTION");
-    let mut code_open_config = CodeOpenConfig::default();
-
     let args = Args::parse();
-    code_open_config.set_ip(args.ip);
-    code_open_config.set_port(args.port);
 
+    let code_open_config = CodeOpenConfig {
+        ip: args.ip,
+        port: args.port,
+    };
+
+    let ssh_flag = env::vars().any(|(k, _)| k == "SSH_CONNECTION");
     if !ssh_flag {
         println!("Error this command should be executed in SSH");
         return;
