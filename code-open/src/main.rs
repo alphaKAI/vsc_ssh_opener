@@ -2,6 +2,7 @@ use clap::{App, Arg};
 use code_open_common::*;
 use path_absolutize::*;
 use std::io::Write;
+use std::path::MAIN_SEPARATOR;
 use std::{env, net::TcpStream, path::PathBuf};
 
 fn send_request_to_server(code_open_config: &CodeOpenConfig, code_open_req: CodeOpenRequest) {
@@ -83,17 +84,20 @@ fn main() {
         },
     );
 
-    let code_open_info = CodeOpenInfo::new(
-        gethostname::gethostname()
-            .to_str()
-            .expect("Failed: to_str")
-            .to_owned(),
-        path.absolutize()
-            .expect("Failed to absolutize")
-            .to_str()
-            .expect("Failed: to_str")
-            .to_owned(),
-    );
+    let remote_host_name = gethostname::gethostname()
+        .to_str()
+        .expect("Failed: to_str")
+        .to_owned();
+    let mut remote_dir_full_path = path
+        .absolutize()
+        .expect("Failed to absolutize")
+        .to_str()
+        .expect("Failed: to_str")
+        .to_owned();
+    if path.is_dir() {
+        remote_dir_full_path.push(MAIN_SEPARATOR);
+    }
+    let code_open_info = CodeOpenInfo::new(remote_host_name, remote_dir_full_path);
 
     let code_open_req = CodeOpenRequest::Open(code_open_info);
 
