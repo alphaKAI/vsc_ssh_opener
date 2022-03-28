@@ -51,8 +51,7 @@ fn main() {
         port: args.port,
     };
 
-    let ssh_flag = env::vars().any(|(k, _)| k == "SSH_CONNECTION");
-    if !ssh_flag {
+    if env::var("SSH_CONNECTION").is_err() {
         println!("Error this command should be executed in SSH");
         return;
     }
