@@ -1,4 +1,4 @@
-use clap::{App, Arg};
+use clap::{Command, Arg};
 use code_open_common::*;
 use path_absolutize::*;
 use std::io::Write;
@@ -34,7 +34,7 @@ fn main() {
 
     let default_port_str = &DEFAULT_PORT.to_string();
 
-    let app = App::new("code-open")
+    let app = Command::new("code-open")
         .version("0.1.0")
         .author("Akihiro Shoji <alpha.kai.net@alpha-kai-net.info>")
         .about("open VSCode over SSH")

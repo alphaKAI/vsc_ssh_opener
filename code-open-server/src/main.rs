@@ -1,4 +1,4 @@
-use clap::{App, Arg};
+use clap::{Command as ClapCommand, Arg};
 use code_open_common::*;
 use once_cell::sync::Lazy;
 use std::path;
@@ -123,7 +123,7 @@ fn main() {
     let mut code_open_config = CodeOpenConfig::default();
     let default_port_str = DEFAULT_PORT.to_string();
 
-    let app = App::new("code-open-server")
+    let app = ClapCommand::new("code-open-server")
         .version("0.1.0")
         .author("Akihiro Shoji <alpha.kai.net@alpha-kai-net.info>")
         .about("open VSCode over SSH Server")
