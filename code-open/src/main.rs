@@ -1,4 +1,4 @@
-use clap::{Command, Arg};
+use clap::{Arg, Command};
 use code_open_common::*;
 use path_absolutize::*;
 use std::io::Write;
