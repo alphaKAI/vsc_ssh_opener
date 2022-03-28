@@ -1,10 +1,23 @@
-use clap::{Arg, Command as ClapCommand};
+use clap::Parser;
 use code_open_common::*;
 use once_cell::sync::Lazy;
 use std::path;
 use std::{collections::HashMap, fs::File};
 use std::{io::Read, net::TcpListener};
 use std::{io::Write, process::Command};
+
+/// open VSCode over SSH
+#[derive(Parser, Debug)]
+#[clap(author, version, about, long_about = None)]
+struct Args {
+    /// ip address of the server to be connected
+    #[clap(short, long, default_value_t = DEFAULT_IP.to_string())]
+    ip: String,
+
+    /// port number of the server to be connected
+    #[clap(short, long, default_value_t = DEFAULT_PORT)]
+    port: u16,
+}
 
 static THIS_APP_NAME: &str = "code-open-server";
 static THIS_APP_CONFIG_BASE_PATH: Lazy<String> = Lazy::new(|| {
@@ -120,39 +133,12 @@ fn server_start(code_open_config: &CodeOpenConfig, table: &HashMap<String, Strin
 }
 
 fn main() {
-    let mut code_open_config = CodeOpenConfig::default();
-    let default_port_str = DEFAULT_PORT.to_string();
+    let args = Args::parse();
 
-    let app = ClapCommand::new("code-open-server")
-        .version("0.1.0")
-        .author("Akihiro Shoji <alpha.kai.net@alpha-kai-net.info>")
-        .about("open VSCode over SSH Server")
-        .arg(
-            Arg::new("ip")
-                .required(false)
-                .short('i')
-                .long("ip")
-                .takes_value(true)
-                .default_value(DEFAULT_IP),
-        )
-        .arg(
-            Arg::new("port")
-                .required(false)
-                .short('p')
-                .long("port")
-                .takes_value(true)
-                .default_value(&default_port_str),
-        );
-
-    let matches = app.get_matches();
-
-    if let Some(ip) = matches.value_of("ip") {
-        code_open_config.set_ip(ip.to_owned());
-    }
-
-    if let Some(port) = matches.value_of("port") {
-        code_open_config.set_port(port.parse().expect("failed to parse given port number"));
-    }
+    let code_open_config = CodeOpenConfig {
+        ip: args.ip,
+        port: args.port,
+    };
 
     let table = load_local_configured_name_table();
     println!("Actual host name to locally configured host name in .ssh/config table:");
