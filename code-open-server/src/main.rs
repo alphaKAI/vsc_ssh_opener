@@ -1,4 +1,4 @@
-use clap::{Command as ClapCommand, Arg};
+use clap::{Arg, Command as ClapCommand};
 use code_open_common::*;
 use once_cell::sync::Lazy;
 use std::path;
