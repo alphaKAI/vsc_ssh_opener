@@ -14,4 +14,4 @@ rmp-serde = "1.1.0"
 gethostname = "0.2.3"
 shellexpand = "2.1.0"
 path-absolutize = "3.0.13"
-clap = { version = "3.1.10", features = ["derive"] }
+clap = { version = "3.1.12", features = ["derive"] }
