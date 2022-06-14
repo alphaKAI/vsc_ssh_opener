@@ -10,13 +10,14 @@ use std::{env, net::TcpStream, path::PathBuf};
 #[clap(author, version, about, long_about = None)]
 struct Args {
     /// ip address of the server to be connected
-    #[clap(short, long, default_value_t = DEFAULT_IP.to_string())]
+    #[clap(short, long, value_parser, default_value_t = DEFAULT_IP.to_string())]
     ip: String,
 
     /// port number of the server to be connected
-    #[clap(short, long, default_value_t = DEFAULT_PORT)]
+    #[clap(short, long, value_parser, default_value_t = DEFAULT_PORT)]
     port: u16,
 
+    #[clap(value_parser)]
     path: Option<String>,
 }
 
