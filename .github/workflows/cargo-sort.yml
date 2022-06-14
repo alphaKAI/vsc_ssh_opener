@@ -1,4 +1,4 @@
-name: Check GitHub Actions workflow files
+name: Check dependencies order in Cargo.toml
 
 on:
   push:
