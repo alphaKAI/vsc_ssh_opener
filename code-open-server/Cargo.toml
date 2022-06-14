@@ -3,15 +3,14 @@ name = "code-open-server"
 version = "0.1.0"
 authors = ["Akihiro Shoji <alpha.kai.net@alpha-kai-net.info>"]
 edition = "2018"
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+clap = "3.2.2"
 code-open-common = { path = "../code-open-common" }
+dirs = "4.0.0"
+once_cell = "1.12.0"
+rmp-serde = "1.1.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-rmp-serde = "1.1.0"
 shellexpand = "2.1.0"
-once_cell = "1.12.0"
-clap = "3.2.2"
-dirs = "4.0.0"
