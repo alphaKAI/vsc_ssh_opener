@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::io::Read;
 use std::{convert::TryInto, mem::size_of};
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CodeOpenInfo {
     pub remote_host_name: String,
     pub remote_dir_full_path: String,
@@ -18,12 +18,12 @@ impl CodeOpenInfo {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CodeOpenRequest {
     Open(CodeOpenInfo),
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CodeOpenResponse {
     Ok,
     Error(String),
