@@ -1,0 +1,20 @@
+name: Check GitHub Actions workflow files
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Install cargo sort
+        uses: cargo install cargo-sort
+
+      - name: Run cargo sort
+        uses: cargo sort -cw
