@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install cargo sort
-        uses: cargo install cargo-sort
+        run: cargo install cargo-sort
 
       - name: Run cargo sort
-        uses: cargo sort -cw
+        run: cargo sort -cw
