@@ -29,9 +29,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ${{ steps.cache-dir.outputs.dir }}
-            ${{ steps.global-dir.outputs.dir }}
-            ${{ steps.global-bin.outputs.dir }}
+            ${{ steps.cache-dirs.outputs.cache-dir }}
+            ${{ steps.cache-dirs.outputs.global-dir }}
+            ${{ steps.cache-dirs.outputs.global-bin }}
           key: ${{ runner.os }}-renovate-config-validator
 
       - name: Install Renovate CLI
