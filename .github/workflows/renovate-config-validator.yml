@@ -14,7 +14,17 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: volta-cli/action@v1
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      
+      - name: Cache Deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.config/yarn/global
+            ~/.yarn/bin
+          key: ${{ runner.os }}-renovate-config-validator
 
       - name: Install Renovate CLI
         run: yarn global add renovate
