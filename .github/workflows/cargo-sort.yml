@@ -13,6 +13,16 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
 
+      - name: Cache deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-cargo-sort
+
       - name: Install cargo sort
         run: cargo install cargo-sort
 
